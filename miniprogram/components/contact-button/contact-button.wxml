@@ -1,0 +1,50 @@
+<view class="contact-button">
+  <!-- 主要联系按钮 -->
+  <view 
+    class="contact-main-btn btn-{{buttonType}} {{disabled ? 'disabled' : ''}}"
+    bind:tap="onContactTap"
+  >
+    <text class="btn-icon">💬</text>
+    <text class="btn-text">{{buttonText}}</text>
+  </view>
+
+  <!-- 联系方式弹窗 -->
+  <view class="contact-modal" wx:if="{{showModal}}">
+    <view class="modal-mask" bind:tap="onContactTap"></view>
+    <view class="modal-content">
+      <view class="modal-header">
+        <text class="modal-title">联系卖家</text>
+        <text class="modal-close" bind:tap="onContactTap">×</text>
+      </view>
+      
+      <view class="contact-options">
+        <view class="contact-option" wx:if="{{contactInfo.phone}}" bind:tap="onPhoneTap">
+          <view class="option-icon">📞</view>
+          <view class="option-info">
+            <text class="option-title">电话联系</text>
+            <text class="option-desc">{{contactInfo.phone}}</text>
+          </view>
+          <text class="option-arrow">›</text>
+        </view>
+        
+        <view class="contact-option" wx:if="{{contactInfo.wechat}}" bind:tap="onWechatTap">
+          <view class="option-icon">💬</view>
+          <view class="option-info">
+            <text class="option-title">微信联系</text>
+            <text class="option-desc">{{contactInfo.wechat}}</text>
+          </view>
+          <text class="option-arrow">›</text>
+        </view>
+        
+        <view class="contact-option" bind:tap="onContactTap">
+          <view class="option-icon">👤</view>
+          <view class="option-info">
+            <text class="option-title">在线聊天</text>
+            <text class="option-desc">立即与卖家沟通</text>
+          </view>
+          <text class="option-arrow">›</text>
+        </view>
+      </view>
+    </view>
+  </view>
+</view>

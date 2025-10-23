@@ -1,0 +1,88 @@
+<view class="comment-list">
+  <view class="comment-header">
+    <text class="comment-title">评论</text>
+    <text class="comment-count">({{comments.length}})</text>
+  </view>
+
+  <view class="comments-container">
+    <block wx:for="{{comments}}" wx:key="_id" wx:for-index="index">
+      <view class="comment-item">
+        <!-- 主评论 -->
+        <view class="main-comment">
+          <image 
+            class="comment-avatar" 
+            src="{{item.authorAvatar || '/images/default-avatar.png'}}"
+            data-user-id="{{item.authorId}}"
+            bind:tap="onAvatarTap"
+          />
+          <view class="comment-content">
+            <view class="comment-info">
+              <text class="comment-author">{{item.authorName}}</text>
+              <text class="comment-time">{{item.createTime}}</text>
+            </view>
+            <text class="comment-text">{{item.content}}</text>
+            <view class="comment-actions">
+              <view 
+                class="action-btn {{item.isLiked ? 'liked' : ''}}" 
+                data-comment="{{item}}"
+                bind:tap="onLikeComment"
+              >
+                <text class="action-icon">{{item.isLiked ? '❤️' : '🤍'}}</text>
+                <text class="action-text">{{item.likeCount || 0}}</text>
+              </view>
+              <view 
+                class="action-btn" 
+                data-comment="{{item}}"
+                bind:tap="onReplyTap"
+              >
+                <text class="action-icon">↩️</text>
+                <text class="action-text">回复</text>
+              </view>
+            </view>
+          </view>
+        </view>
+
+        <!-- 回复列表 -->
+        <view class="replies-section" wx:if="{{item.replies && item.replies.length > 0}}">
+          <view 
+            class="replies-toggle" 
+            data-comment-id="{{item._id}}"
+            bind:tap="onExpandReplies"
+          >
+            <text class="toggle-text">
+              {{expandedComments.has(item._id) ? '收起' : '展开+{item.replies.length}条回复'}}
+            </text>
+            <text class="toggle-icon">{{expandedComments.has(item._id) ? '▲' : '▼'}}</text>
+          </view>
+
+          <view class="replies-list" wx:if="{{expandedComments.has(item._id)}}">
+            <block wx:for="{{item.replies}}" wx:key="_id">
+              <view class="reply-item">
+                <image 
+                  class="reply-avatar" 
+                  src="{{item.authorAvatar || '/images/default-avatar.png'}}"
+                  data-user-id="{{item.authorId}}"
+                  bind:tap="onAvatarTap"
+                />
+                <view class="reply-content">
+                  <view class="reply-info">
+                    <text class="reply-author">{{item.authorName}}</text>
+                    <text class="reply-time">{{item.createTime}}</text>
+                  </view>
+                  <text class="reply-text">
+                    <text class="reply-to" wx:if="{{item.replyTo}}">@{{item.replyTo}} </text>
+                    {{item.content}}
+                  </text>
+                </view>
+              </view>
+            </block>
+          </view>
+        </view>
+      </view>
+    </block>
+  </view>
+
+  <view class="empty-state" wx:if="{{comments.length === 0}}">
+    <text class="empty-text">暂无评论，快来抢沙发吧~</text>
+  </view>
+</view>

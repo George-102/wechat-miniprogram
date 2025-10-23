@@ -1,0 +1,215 @@
+<view class="post-detail-page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <view class="nav-back" bind:tap="onNavigateBack">
+        <text class="back-icon">‹</text>
+      </view>
+      <text class="nav-title">帖子详情</text>
+      <view class="nav-actions">
+        <view class="nav-btn" bind:tap="onShowShareMenu">
+          <text class="btn-icon">↗️</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="detail-container" style="padding-top: {{customNavHeight}}px">
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 帖子内容 -->
+    <view class="post-content" wx:if="{{!loading && post}}">
+      <!-- 作者信息 -->
+      <view class="author-section">
+        <view class="author-info">
+          <image 
+            class="author-avatar" 
+            src="{{post.authorAvatar || '/images/default-avatar.png'}}"
+            data-user-id="{{post.authorId}}"
+            bind:tap="onAvatarTap"
+          />
+          <view class="author-details">
+            <text class="author-name">{{post.authorName}}</text>
+            <text class="post-time">{{post.createTime}}</text>
+          </view>
+        </view>
+        <view class="post-tag {{post.tag || 'default'}}">
+          {{post.tag || '分享'}}
+        </view>
+      </view>
+
+      <!-- 帖子内容 -->
+      <view class="content-section">
+        <text class="content-text">{{post.content}}</text>
+      </view>
+
+      <!-- 图片展示 -->
+      <view class="image-section" wx:if="{{post.images && post.images.length > 0}}">
+        <view class="image-grid image-grid-{{post.images.length > 1 ? 'multiple' : 'single'}}">
+          <block wx:for="{{post.images}}" wx:key="index">
+            <image 
+              class="post-image {{post.images.length === 1 ? 'single-image' : ''}}"
+              src="{{item}}"
+              mode="aspectFill"
+            />
+          </block>
+        </view>
+      </view>
+
+      <!-- 位置信息 -->
+      <view class="location-section" wx:if="{{post.location}}">
+        <view class="location-info">
+          <text class="location-icon">📍</text>
+          <text class="location-text">{{post.location}}</text>
+        </view>
+      </view>
+
+      <!-- 互动统计 -->
+      <view class="stats-section">
+        <view class="stats-item">
+          <text class="stats-number">{{likeCount}}</text>
+          <text class="stats-label">点赞</text>
+        </view>
+        <view class="stats-item">
+          <text class="stats-number">{{post.commentCount || 0}}</text>
+          <text class="stats-label">评论</text>
+        </view>
+        <view class="stats-item">
+          <text class="stats-number">{{post.viewCount || 0}}</text>
+          <text class="stats-label">浏览</text>
+        </view>
+      </view>
+
+      <!-- 操作按钮 -->
+      <view class="action-section">
+        <view class="action-buttons">
+          <view class="action-btn {{liked ? 'active' : ''}}" bind:tap="onLikePost">
+            <text class="action-icon">{{liked ? '❤️' : '🤍'}}</text>
+            <text class="action-text">点赞</text>
+          </view>
+          <view class="action-btn" bind:tap="onShowCommentInput">
+            <text class="action-icon">💬</text>
+            <text class="action-text">评论</text>
+          </view>
+          <view class="action-btn {{collected ? 'active' : ''}}" bind:tap="onCollectPost">
+            <text class="action-icon">{{collected ? '⭐' : '☆'}}</text>
+            <text class="action-text">收藏</text>
+          </view>
+          <view class="action-btn" bind:tap="onShowShareMenu">
+            <text class="action-icon">↗️</text>
+            <text class="action-text">分享</text>
+          </view>
+        </view>
+      </view>
+    </view>
+
+    <!-- 评论列表 -->
+    <view class="comments-section" wx:if="{{!loading}}">
+      <comment-list 
+        comments="{{comments}}"
+        postId="{{postId}}"
+        bind:reply="onReplyComment"
+        bind:likeComment="onLikeComment"
+        bind:avatarTap="onAvatarTap"
+      />
+
+      <!-- 评论加载状态 -->
+      <view class="loading-state" wx:if="{{commentLoading && comments.length > 0}}">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">加载中...</text>
+      </view>
+
+      <!-- 没有更多评论 -->
+      <view class="no-more" wx:if="{{!hasMore && comments.length > 0}}">
+        <text class="no-more-text">没有更多评论了</text>
+      </view>
+
+      <!-- 空评论 -->
+      <view class="empty-comments" wx:if="{{!commentLoading && comments.length === 0}}">
+        <text class="empty-icon">💬</text>
+        <text class="empty-text">暂无评论</text>
+        <text class="empty-desc">快来发表第一条评论吧</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 评论输入框 -->
+  <view class="comment-input-section {{showCommentInput ? 'show' : ''}}">
+    <view class="comment-input-container">
+      <view class="input-header" wx:if="{{replyingTo}}">
+        <text class="reply-text">回复 @{{replyingTo.authorName}}</text>
+        <view class="cancel-reply" bind:tap="onShowCommentInput">
+          <text class="cancel-text">取消回复</text>
+        </view>
+      </view>
+      <view class="input-content">
+        <textarea 
+          class="comment-textarea" 
+          placeholder="{{replyingTo ? '回复 ' + replyingTo.authorName : '说点什么...'}}"
+          value="{{commentText}}"
+          bindinput="onCommentInput"
+          maxlength="500"
+          show-confirm-bar="{{false}}"
+          auto-focus
+        />
+        <view 
+          class="submit-btn {{commentText.trim() ? 'active' : ''}}"
+          bind:tap="onSubmitComment"
+        >
+          <text class="submit-text">发送</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部操作栏 -->
+  <view class="bottom-actions" wx:if="{{!showCommentInput}}">
+    <view class="action-input" bind:tap="onShowCommentInput">
+      <text class="input-placeholder">说点什么...</text>
+    </view>
+    <view class="action-buttons">
+      <view class="action-btn {{liked ? 'active' : ''}}" bind:tap="onLikePost">
+        <text class="action-icon">{{liked ? '❤️' : '🤍'}}</text>
+        <text class="action-count">{{likeCount}}</text>
+      </view>
+      <view class="action-btn" bind:tap="onShowCommentInput">
+        <text class="action-icon">💬</text>
+        <text class="action-count">{{post ? post.commentCount : 0}}</text>
+      </view>
+      <view class="action-btn {{collected ? 'active' : ''}}" bind:tap="onCollectPost">
+        <text class="action-icon">{{collected ? '⭐' : '☆'}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 分享菜单 -->
+  <view class="share-menu {{shareMenu ? 'show' : ''}}">
+    <view class="menu-mask" bind:tap="onHideShareMenu"></view>
+    <view class="menu-content">
+      <view class="menu-header">
+        <text class="menu-title">分享到</text>
+      </view>
+      <view class="menu-options">
+        <view class="menu-option" bind:tap="onSharePost">
+          <view class="option-icon">👥</view>
+          <text class="option-text">微信好友</text>
+        </view>
+        <view class="menu-option" bind:tap="onCopyLink">
+          <view class="option-icon">🔗</view>
+          <text class="option-text">复制链接</text>
+        </view>
+        <view class="menu-option" bind:tap="onReportPost">
+          <view class="option-icon">🚫</view>
+          <text class="option-text">举报</text>
+        </view>
+      </view>
+      <view class="menu-cancel" bind:tap="onHideShareMenu">
+        <text class="cancel-text">取消</text>
+      </view>
+    </view>
+  </view>
+</view>

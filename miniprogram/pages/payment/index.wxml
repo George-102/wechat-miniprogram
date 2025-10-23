@@ -1,0 +1,96 @@
+<view class="payment-page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <view class="nav-back" bind:tap="onCancelPayment">
+        <text class="back-icon">‹</text>
+      </view>
+      <text class="nav-title">确认支付</text>
+      <view class="nav-actions"></view>
+    </view>
+  </view>
+
+  <view class="payment-container" style="padding-top: {{customNavHeight}}px">
+    <!-- 订单信息 -->
+    <view class="order-section">
+      <view class="order-card">
+        <view class="order-header">
+          <text class="order-title">订单信息</text>
+          <text class="order-amount">¥{{orderInfo.formattedAmount}}</text>
+        </view>
+        <view class="order-body">
+          <text class="product-title">{{orderInfo.title}}</text>
+          <text class="product-desc">{{orderInfo.description}}</text>
+        </view>
+        <view class="order-footer">
+          <text class="order-id">订单号：{{orderInfo.id}}</text>
+          <text class="order-time">创建时间：{{orderInfo.createTime}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 支付方式 -->
+    <view class="payment-methods">
+      <view class="section-title">选择支付方式</view>
+      <view class="methods-list">
+        <block wx:for="{{paymentMethods}}" wx:key="id">
+          <view 
+            class="method-item {{item.selected ? 'selected' : ''}}"
+            data-method-id="{{item.id}}"
+            bind:tap="onSelectPayment"
+          >
+            <view class="method-icon">
+              <text class="icon">{{item.icon}}</text>
+            </view>
+            <view class="method-info">
+              <text class="method-name">{{item.name}}</text>
+              <text class="method-desc">{{item.description}}</text>
+            </view>
+            <view class="method-radio">
+              <view class="radio {{item.selected ? 'selected' : ''}}"></view>
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 支付协议 -->
+    <view class="protocol-section">
+      <label class="protocol-checkbox">
+        <checkbox 
+          checked="{{agreeProtocol}}" 
+          bindchange="onAgreeChange"
+          color="#007AFF"
+        />
+        <text class="protocol-text">
+          我已阅读并同意
+          <text class="protocol-link" bind:tap="onViewProtocol">《支付协议》</text>
+        </text>
+      </label>
+    </view>
+
+    <!-- 底部支付按钮 -->
+    <view class="bottom-actions">
+      <view class="payment-info">
+        <text class="payment-label">需支付</text>
+        <text class="order-amount">¥{{orderInfo.formattedAmount}}</text>
+      </view>
+      <view 
+        class="payment-btn {{agreeProtocol && !paying ? 'active' : ''}} {{paying ? 'disabled' : ''}}"
+        bind:tap="onConfirmPayment"
+      >
+        <text class="payment-btn-text">
+          {{paying ? '支付中...' : '确认支付'}}
+        </text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 支付加载遮罩 -->
+  <view class="payment-mask" wx:if="{{paying}}">
+    <view class="payment-loading">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">支付中...</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,154 @@
+.success-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.success-container {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0 48rpx;
+  text-align: center;
+}
+
+/* 自定义导航栏 */
+.custom-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: transparent;
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 32rpx;
+}
+
+.nav-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: white;
+}
+
+/* 成功图标 */
+.success-icon {
+  margin-bottom: 48rpx;
+}
+
+.icon {
+  font-size: 120rpx;
+}
+
+/* 成功信息 */
+.success-message {
+  margin-bottom: 64rpx;
+}
+
+.message-title {
+  display: block;
+  font-size: 48rpx;
+  font-weight: 700;
+  margin-bottom: 24rpx;
+}
+
+.message-amount {
+  display: block;
+  font-size: 64rpx;
+  font-weight: 700;
+  margin-bottom: 32rpx;
+}
+
+.message-desc {
+  display: block;
+  font-size: 28rpx;
+  opacity: 0.9;
+  line-height: 1.5;
+}
+
+/* 订单信息 */
+.order-info {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(20rpx);
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 64rpx;
+  width: 100%;
+  max-width: 500rpx;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+}
+
+.info-item:last-child {
+  margin-bottom: 0;
+}
+
+.info-label {
+  font-size: 28rpx;
+  opacity: 0.8;
+}
+
+.info-value {
+  font-size: 28rpx;
+  font-weight: 600;
+}
+
+/* 操作按钮 */
+.action-buttons {
+  display: flex;
+  gap: 24rpx;
+  margin-bottom: 48rpx;
+  width: 100%;
+  max-width: 500rpx;
+}
+
+.btn {
+  flex: 1;
+  padding: 24rpx 32rpx;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.btn:active {
+  transform: scale(0.98);
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2rpx solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.btn-primary {
+  background: white;
+  color: #667eea;
+}
+
+.btn-text {
+  font-weight: 600;
+}
+
+/* 自动跳转 */
+.auto-redirect {
+  margin-top: auto;
+  padding-bottom: 64rpx;
+}
+
+.redirect-text {
+  font-size: 24rpx;
+  opacity: 0.7;
+}

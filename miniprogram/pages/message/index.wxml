@@ -1,0 +1,115 @@
+<view class="message-page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <text class="nav-title">消息</text>
+      <view class="nav-actions">
+        <view class="nav-btn" bind:tap="onChatTap">
+          <text class="btn-icon">💬</text>
+        </view>
+        <view class="nav-btn" bind:tap="onClearAll">
+          <text class="btn-icon">🗑️</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="message-container" style="padding-top: {{customNavHeight}}px">
+    <!-- 标签导航 -->
+    <view class="message-tabs">
+      <view class="tabs-container">
+        <block wx:for="{{tabs}}" wx:key="id">
+          <view 
+            class="tab-item {{activeTab === item.id ? 'active' : ''}}"
+            data-tab="{{item.id}}"
+            bind:tap="onTabTap"
+          >
+            <text class="tab-name">{{item.name}}</text>
+            <view class="tab-indicator"></view>
+            <view class="unread-badge" wx:if="{{item.id === 'unread' && unreadCount > 0}}">
+              {{unreadCount > 99 ? '99+' : unreadCount}}
+            </view>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 消息列表 -->
+    <view class="message-list">
+      <block wx:for="{{messages}}" wx:key="_id">
+        <view 
+          class="message-item {{item.isRead ? '' : 'unread'}}"
+          data-message="{{item}}"
+          bind:tap="onMessageTap"
+        >
+          <!-- 消息图标 -->
+          <view class="message-icon">
+            <text class="icon">{{this.getMessageIcon(item.type)}}</text>
+            <view class="unread-dot" wx:if="{{!item.isRead}}"></view>
+          </view>
+
+          <!-- 消息内容 -->
+          <view class="message-content">
+            <view class="message-header">
+              <text class="message-title">{{item.title}}</text>
+              <text class="message-time">{{item.createTime}}</text>
+            </view>
+            <view class="message-body">
+              <text class="message-text {{item.isExpanded ? 'expanded' : ''}}">
+                {{item.content}}
+              </text>
+              <text 
+                class="expand-btn" 
+                wx:if="{{item.type === 'system' && item.content.length > 60}}"
+                bind:tap="toggleMessageExpand"
+                data-messageid="{{item._id}}"
+              >
+                {{item.isExpanded ? '收起' : '展开'}}
+              </text>
+            </view>
+            <view class="message-extra" wx:if="{{item.extraInfo}}">
+              <text class="extra-text">{{item.extraInfo}}</text>
+            </view>
+          </view>
+
+          <!-- 操作按钮 -->
+          <view class="message-actions">
+            <view 
+              class="action-btn read-btn" 
+              wx:if="{{!item.isRead}}"
+              data-messageid="{{item._id}}"
+              bind:tap="markAsRead"
+            >
+              <text class="action-text">标为已读</text>
+            </view>
+            <view 
+              class="action-btn delete-btn" 
+              data-messageid="{{item._id}}"
+              bind:tap="onDeleteMessage"
+            >
+              <text class="action-text">删除</text>
+            </view>
+          </view>
+        </view>
+      </block>
+    </view>
+
+    <!-- 加载状态 -->
+    <view class="loading-state" wx:if="{{loading && messages.length > 0}}">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">加载中...</text>
+    </view>
+
+    <!-- 没有更多 -->
+    <view class="no-more" wx:if="{{!hasMore && messages.length > 0}}">
+      <text class="no-more-text">没有更多消息了</text>
+    </view>
+
+    <!-- 空状态 -->
+    <view class="empty-state" wx:if="{{!loading && messages.length === 0}}">
+      <text class="empty-icon">💌</text>
+      <text class="empty-text">暂无消息</text>
+      <text class="empty-desc">当有新消息时会在这里显示</text>
+    </view>
+  </view>
+</view>

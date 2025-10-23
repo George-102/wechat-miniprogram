@@ -1,0 +1,160 @@
+<view class="publish-page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <view class="nav-back" bind:tap="onCancel">
+        <text class="back-icon">‹</text>
+        <text class="back-text">取消</text>
+      </view>
+      <text class="nav-title">发布帖子</text>
+      <view class="nav-actions">
+        <view 
+          class="publish-btn {{publishing ? 'disabled' : ''}} {{content && content.trim() ? 'active' : ''}}"
+          bind:tap="onPublish"
+        >
+          <text class="publish-text">{{publishing ? '发布中...' : '发布'}}</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <view class="publish-container" style="padding-top: {{customNavHeight}}px">
+    <!-- 内容输入 -->
+    <view class="content-section">
+      <textarea 
+        class="content-input" 
+        placeholder="分享你的想法、经验或问题..."
+        value="{{content}}"
+        bindinput="onContentInput"
+        maxlength="{{maxWords}}"
+        show-confirm-bar="{{false}}"
+        auto-focus
+      />
+      <view class="word-count">
+        <text class="count-text {{wordCount > maxWords * 0.8 ? 'warning' : ''}}">
+          {{wordCount}}/{{maxWords}}
+        </text>
+      </view>
+    </view>
+
+    <!-- 图片上传 -->
+    <view class="images-section" wx:if="{{images.length > 0}}">
+      <view class="images-grid">
+        <block wx:for="{{images}}" wx:key="*this" wx:for-index="index">
+          <view class="image-item">
+            <image 
+              class="image" 
+              src="{{item}}" 
+              mode="aspectFill"
+              data-index="{{index}}"
+              bind:tap="onPreviewImage"
+            />
+            <view 
+              class="delete-btn" 
+              data-index="{{index}}"
+              bind:tap="onDeleteImage"
+            >
+              <text class="delete-icon">×</text>
+            </view>
+          </view>
+        </block>
+        
+        <view 
+          class="add-image-btn" 
+          wx:if="{{images.length < maxImages}}"
+          bind:tap="onChooseImage"
+        >
+          <text class="add-icon">+</text>
+          <text class="add-text">添加图片</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 功能选项 -->
+    <view class="options-section">
+      <!-- 标签选择 -->
+      <view class="option-item">
+        <view class="option-label">
+          <text class="label-text">标签</text>
+        </view>
+        <view class="tags-list">
+          <block wx:for="{{tags}}" wx:key="id">
+            <view 
+              class="tag-item {{selectedTag === item.id ? 'active' : ''}}"
+              style="{{selectedTag === item.id ? 'background-color: ' + item.color + '; border-color: ' + item.color : ''}}"
+              data-tag="{{item.id}}"
+              bind:tap="onTagTap"
+            >
+              <text class="tag-text">{{item.name}}</text>
+            </view>
+          </block>
+        </view>
+      </view>
+
+      <!-- 位置选择 -->
+      <view class="option-item">
+        <view class="option-label">
+          <text class="label-text">位置</text>
+        </view>
+        <view class="location-content">
+          <view 
+            class="location-btn {{location ? 'has-location' : ''}}"
+            bind:tap="onChooseLocation"
+          >
+            <text class="location-icon">📍</text>
+            <text class="location-text">
+              {{location || '添加位置'}}
+            </text>
+            <view 
+              class="clear-location {{location ? 'show' : ''}}"
+              bind:tap="onClearLocation"
+            >
+              <text class="clear-icon">×</text>
+            </view>
+          </view>
+        </view>
+      </view>
+
+      <!-- 匿名发布 -->
+      <view class="option-item">
+        <view class="option-label">
+          <text class="label-text">匿名发布</text>
+          <text class="label-desc">隐藏你的个人信息</text>
+        </view>
+        <view class="switch-content">
+          <switch 
+            checked="{{isAnonymous}}" 
+            bindchange="onAnonymousChange"
+            color="#007AFF"
+          />
+        </view>
+      </view>
+    </view>
+
+    <!-- 底部操作栏 -->
+    <view class="bottom-actions" wx:if="{{images.length === 0}}">
+      <view class="action-buttons">
+        <view class="action-btn" bind:tap="onChooseImage">
+          <text class="action-icon">🖼️</text>
+          <text class="action-text">图片</text>
+        </view>
+        <view class="action-btn" bind:tap="onChooseLocation">
+          <text class="action-icon">📍</text>
+          <text class="action-text">位置</text>
+        </view>
+        <view class="action-btn" bind:tap="onTagTap" data-tag="question">
+          <text class="action-icon">❓</text>
+          <text class="action-text">提问</text>
+        </view>
+      </view>
+    </view>
+  </view>
+
+  <!-- 发布加载遮罩 -->
+  <view class="publish-mask" wx:if="{{publishing}}">
+    <view class="publish-loading">
+      <view class="loading-spinner"></view>
+      <text class="loading-text">发布中...</text>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,71 @@
+<view class="post-card">
+  <!-- 作者信息 -->
+  <view class="author-section">
+    <view class="author-info">
+      <image 
+        class="author-avatar" 
+        src="{{postData.authorAvatar || '/images/default-avatar.png'}}"
+        bind:tap="onAvatarTap"
+      />
+      <view class="author-details">
+        <text class="author-name">{{postData.authorName || '匿名用户'}}</text>
+        <text class="post-time">{{postData.createTime}}</text>
+      </view>
+    </view>
+    <view class="post-tag {{postData.tag || 'default'}}">
+      {{postData.tag || '分享'}}
+    </view>
+  </view>
+
+  <!-- 帖子内容 -->
+  <view class="content-section">
+    <text 
+      class="content-text {{isExpanded ? 'expanded' : ''}}"
+      bind:tap="onContentTap"
+    >
+      {{postData.content}}
+    </text>
+    <text 
+      class="expand-btn" 
+      wx:if="{{postData.content && postData.content.length > 100}}"
+      bind:tap="onContentTap"
+    >
+      {{isExpanded ? '收起' : '展开'}}
+    </text>
+  </view>
+
+  <!-- 图片展示 -->
+  <view class="image-section" wx:if="{{postData.images && postData.images.length > 0}}">
+    <view class="image-grid image-grid-{{postData.images.length > 1 ? 'multiple' : 'single'}}">
+      <block wx:for="{{postData.images}}" wx:key="index">
+        <image 
+          class="post-image {{postData.images.length === 1 ? 'single-image' : ''}}"
+          src="{{item}}"
+          mode="aspectFill"
+          data-index="{{index}}"
+          bind:tap="onImageTap"
+        />
+      </block>
+    </view>
+  </view>
+
+  <!-- 交互按钮 -->
+  <view class="action-section" wx:if="{{showActions}}">
+    <view class="action-buttons">
+      <view class="action-item {{isLiked ? 'liked' : ''}}" bind:tap="onLikeTap">
+        <text class="icon-like">{{isLiked ? '❤️' : '🤍'}}</text>
+        <text class="action-count">{{likeCount}}</text>
+      </view>
+      
+      <view class="action-item" bind:tap="onCommentTap">
+        <text class="icon-comment">💬</text>
+        <text class="action-count">{{postData.commentCount || 0}}</text>
+      </view>
+      
+      <view class="action-item" bind:tap="onShareTap">
+        <text class="icon-share">↗️</text>
+        <text class="action-count">{{postData.shareCount || 0}}</text>
+      </view>
+    </view>
+  </view>
+</view>

@@ -1,0 +1,45 @@
+<view class="level-progress" bind:tap="onProgressTap">
+  <!-- 等级信息 -->
+  <view class="level-info" wx:if="{{showInfo}}">
+    <view class="level-current">
+      <text class="level-label">Lv.{{currentLevel}}</text>
+      <text class="level-name">{{getLevelName(currentLevel)}}</text>
+    </view>
+    <view class="level-exp">
+      <text class="exp-current">{{currentExp}}</text>
+      <text class="exp-separator">/</text>
+      <text class="exp-total">{{nextLevelExp}}</text>
+    </view>
+    <view class="level-next">
+      <text class="level-label">Lv.{{nextLevel}}</text>
+      <text class="level-name">{{getLevelName(nextLevel)}}</text>
+    </view>
+  </view>
+
+  <!-- 进度条 -->
+  <view class="progress-container">
+    <view class="progress-background">
+      <view 
+        class="progress-fill" 
+        style="width: {{animatedProgress}}%"
+      ></view>
+    </view>
+    
+    <!-- 进度节点 -->
+    <view class="progress-milestones">
+      <view 
+        class="milestone {{index * 25 <= animatedProgress ? 'active' : ''}}" 
+        wx:for="{{4}}" 
+        wx:key="index"
+        style="left: {{(index + 1) * 25}}%"
+      ></view>
+    </view>
+  </view>
+
+  <!-- 进度提示 -->
+  <view class="progress-tip" wx:if="{{showInfo}}">
+    <text class="tip-text">
+      还差 {{nextLevelExp - currentExp}} 经验升级到 Lv.{{nextLevel}}
+    </text>
+  </view>
+</view>

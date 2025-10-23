@@ -1,0 +1,176 @@
+.post-card {
+  background: #ffffff;
+  border-radius: 20rpx;
+  margin: 20rpx 24rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.post-card:active {
+  transform: translateY(-4rpx);
+  box-shadow: 0 12rpx 50rpx rgba(0, 0, 0, 0.12);
+}
+
+/* 作者信息区域 */
+.author-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 24rpx;
+}
+
+.author-info {
+  display: flex;
+  align-items: center;
+  flex: 1;
+}
+
+.author-avatar {
+  width: 80rpx;
+  height: 80rpx;
+  border-radius: 50%;
+  margin-right: 20rpx;
+  border: 4rpx solid #f8f9fa;
+}
+
+.author-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.author-name {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8rpx;
+}
+
+.post-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.post-tag {
+  padding: 8rpx 20rpx;
+  border-radius: 20rpx;
+  font-size: 24rpx;
+  font-weight: 500;
+}
+
+.post-tag.default {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
+
+.post-tag.hot {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
+
+.post-tag.new {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+  color: white;
+}
+
+/* 内容区域 */
+.content-section {
+  margin-bottom: 24rpx;
+  position: relative;
+}
+
+.content-text {
+  font-size: 30rpx;
+  line-height: 1.6;
+  color: #333;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.content-text:not(.expanded) {
+  -webkit-line-clamp: 3;
+}
+
+.expand-btn {
+  color: #007AFF;
+  font-size: 28rpx;
+  margin-left: 12rpx;
+  font-weight: 500;
+}
+
+/* 图片区域 */
+.image-section {
+  margin-bottom: 24rpx;
+}
+
+.image-grid {
+  border-radius: 16rpx;
+  overflow: hidden;
+}
+
+.image-grid-multiple {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 4rpx;
+}
+
+.post-image {
+  width: 100%;
+  background-color: #f8f9fa;
+}
+
+.single-image {
+  height: 400rpx;
+  border-radius: 16rpx;
+}
+
+.image-grid-multiple .post-image {
+  height: 300rpx;
+}
+
+/* 交互按钮区域 */
+.action-section {
+  border-top: 2rpx solid #f5f5f5;
+  padding-top: 24rpx;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.action-item {
+  display: flex;
+  align-items: center;
+  padding: 16rpx 32rpx;
+  border-radius: 30rpx;
+  transition: all 0.3s ease;
+  background: #f8f9fa;
+}
+
+.action-item:active {
+  background: #e9ecef;
+  transform: scale(0.95);
+}
+
+.action-item.liked {
+  background: #fff0f0;
+}
+
+.icon-like, .icon-comment, .icon-share {
+  font-size: 36rpx;
+  margin-right: 12rpx;
+}
+
+.action-count {
+  font-size: 28rpx;
+  color: #666;
+  font-weight: 500;
+}
+
+.action-item.liked .action-count {
+  color: #ff4757;
+}

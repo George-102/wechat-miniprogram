@@ -1,0 +1,162 @@
+.contact-button {
+  width: 100%;
+}
+
+/* 主要按钮样式 */
+.contact-main-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24rpx 32rpx;
+  border-radius: 50rpx;
+  font-size: 32rpx;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.contact-main-btn:active {
+  transform: scale(0.98);
+}
+
+.contact-main-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* 按钮类型 */
+.btn-primary {
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+  color: white;
+  box-shadow: 0 8rpx 32rpx rgba(0, 122, 255, 0.3);
+}
+
+.btn-secondary {
+  background: linear-gradient(135deg, #34C759 0%, #30D158 100%);
+  color: white;
+  box-shadow: 0 8rpx 32rpx rgba(52, 199, 89, 0.3);
+}
+
+.btn-outline {
+  background: transparent;
+  color: #007AFF;
+  border: 2rpx solid #007AFF;
+}
+
+.btn-icon {
+  font-size: 36rpx;
+  margin-right: 16rpx;
+}
+
+.btn-text {
+  font-weight: 600;
+}
+
+/* 弹窗样式 */
+.contact-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9999;
+  display: flex;
+  align-items: flex-end;
+}
+
+.modal-mask {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+  position: relative;
+  width: 100%;
+  background: white;
+  border-radius: 40rpx 40rpx 0 0;
+  padding: 48rpx 32rpx;
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40rpx;
+}
+
+.modal-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.modal-close {
+  font-size: 48rpx;
+  color: #999;
+  padding: 16rpx;
+}
+
+/* 联系选项 */
+.contact-options {
+  display: flex;
+  flex-direction: column;
+  gap: 24rpx;
+}
+
+.contact-option {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  background: #f8f9fa;
+  border-radius: 20rpx;
+  transition: all 0.3s ease;
+}
+
+.contact-option:active {
+  background: #e9ecef;
+  transform: scale(0.98);
+}
+
+.option-icon {
+  font-size: 48rpx;
+  margin-right: 24rpx;
+}
+
+.option-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.option-title {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8rpx;
+}
+
+.option-desc {
+  font-size: 26rpx;
+  color: #666;
+}
+
+.option-arrow {
+  font-size: 36rpx;
+  color: #999;
+  margin-left: 16rpx;
+}

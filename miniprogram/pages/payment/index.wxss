@@ -1,0 +1,342 @@
+.payment-page {
+  min-height: 100vh;
+  background: #F8F9FA;
+}
+
+.payment-container {
+  min-height: 100vh;
+  padding-bottom: 140rpx;
+}
+
+/* 自定义导航栏 */
+.custom-nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20rpx);
+  border-bottom: 1rpx solid rgba(0, 0, 0, 0.1);
+}
+
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32rpx;
+}
+
+.nav-back {
+  width: 64rpx;
+  height: 64rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.nav-back:active {
+  background: #f0f0f0;
+}
+
+.back-icon {
+  font-size: 40rpx;
+  color: #1a1a1a;
+  font-weight: 300;
+}
+
+.nav-title {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #1a1a1a;
+}
+
+.nav-actions {
+  width: 64rpx; /* 占位 */
+}
+
+/* 订单信息 */
+.order-section {
+  padding: 32rpx;
+}
+
+.order-card {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.06);
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24rpx;
+  padding-bottom: 24rpx;
+  border-bottom: 1rpx solid #f0f0f0;
+}
+
+.order-title {
+  font-size: 28rpx;
+  color: #666;
+}
+
+.order-amount {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #FF3B30;
+}
+
+.order-body {
+  margin-bottom: 24rpx;
+}
+
+.product-title {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 12rpx;
+}
+
+.product-desc {
+  display: block;
+  font-size: 26rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.order-footer {
+  display: flex;
+  flex-direction: column;
+  gap: 8rpx;
+}
+
+.order-id, .order-time {
+  font-size: 24rpx;
+  color: #999;
+}
+
+/* 支付方式 */
+.payment-methods {
+  padding: 0 32rpx;
+  margin-bottom: 40rpx;
+}
+
+.section-title {
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 24rpx;
+}
+
+.methods-list {
+  background: white;
+  border-radius: 20rpx;
+  overflow: hidden;
+  box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.06);
+}
+
+.method-item {
+  display: flex;
+  align-items: center;
+  padding: 32rpx;
+  border-bottom: 1rpx solid #f8f9fa;
+  transition: all 0.3s ease;
+}
+
+.method-item:active {
+  background: #f8f9fa;
+}
+
+.method-item:last-child {
+  border-bottom: none;
+}
+
+.method-item.selected {
+  background: #f8fbff;
+}
+
+.method-icon {
+  margin-right: 24rpx;
+}
+
+.icon {
+  font-size: 48rpx;
+}
+
+.method-info {
+  flex: 1;
+}
+
+.method-name {
+  display: block;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 8rpx;
+}
+
+.method-desc {
+  display: block;
+  font-size: 24rpx;
+  color: #999;
+}
+
+.method-radio {
+  margin-left: 24rpx;
+}
+
+.radio {
+  width: 40rpx;
+  height: 40rpx;
+  border: 2rpx solid #e0e0e0;
+  border-radius: 50%;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.radio.selected {
+  border-color: #007AFF;
+  background: #007AFF;
+}
+
+.radio.selected::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20rpx;
+  height: 20rpx;
+  background: white;
+  border-radius: 50%;
+}
+
+/* 支付协议 */
+.protocol-section {
+  padding: 0 32rpx;
+}
+
+.protocol-checkbox {
+  display: flex;
+  align-items: flex-start;
+  font-size: 24rpx;
+  color: #666;
+  line-height: 1.4;
+}
+
+.protocol-text {
+  margin-left: 16rpx;
+}
+
+.protocol-link {
+  color: #007AFF;
+}
+
+/* 底部支付按钮 */
+.bottom-actions {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: white;
+  border-top: 1rpx solid #f0f0f0;
+  padding: 24rpx 32rpx;
+  padding-bottom: calc(24rpx + env(safe-area-inset-bottom));
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.payment-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.payment-label {
+  font-size: 24rpx;
+  color: #666;
+  margin-bottom: 4rpx;
+}
+
+.payment-amount {
+  font-size: 36rpx;
+  font-weight: 700;
+  color: #FF3B30;
+}
+
+.payment-btn {
+  padding: 24rpx 48rpx;
+  background: #f8f9fa;
+  border-radius: 50rpx;
+  transition: all 0.3s ease;
+}
+
+.payment-btn.active {
+  background: linear-gradient(135deg, #007AFF 0%, #5856D6 100%);
+}
+
+.payment-btn.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.payment-btn:active {
+  transform: scale(0.98);
+}
+
+.payment-btn-text {
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #999;
+}
+
+.payment-btn.active .payment-btn-text {
+  color: white;
+}
+
+/* 支付加载遮罩 */
+.payment-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.payment-loading {
+  background: white;
+  padding: 64rpx;
+  border-radius: 24rpx;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.loading-spinner {
+  width: 80rpx;
+  height: 80rpx;
+  border: 4rpx solid #f0f0f0;
+  border-top: 4rpx solid #007AFF;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 32rpx;
+}
+
+.loading-text {
+  font-size: 28rpx;
+  color: #666;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

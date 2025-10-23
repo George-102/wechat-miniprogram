@@ -1,0 +1,104 @@
+<view class="auth-page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <text class="nav-title">登录</text>
+    </view>
+  </view>
+
+  <view class="auth-container" style="padding-top: {{customNavHeight}}px">
+    <!-- 已登录状态 -->
+    <view class="logged-in" wx:if="{{isLogin}}">
+      <view class="user-card">
+        <image class="user-avatar" src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}" />
+        <text class="user-name">{{userInfo.nickName || '用户'}}</text>
+        <text class="welcome-text">欢迎回来！</text>
+        
+        <view class="login-stats">
+          <view class="stat-item">
+            <text class="stat-number">Lv.{{userInfo.level || 1}}</text>
+            <text class="stat-label">等级</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-number">{{userInfo.exp || 0}}</text>
+            <text class="stat-label">经验</text>
+          </view>
+          <view class="stat-item">
+            <text class="stat-number">{{userInfo.postCount || 0}}</text>
+            <text class="stat-label">帖子</text>
+          </view>
+        </view>
+      </view>
+
+      <view class="action-buttons">
+        <button class="btn btn-primary" bind:tap="redirectToHome">
+          进入首页
+        </button>
+        <button class="btn btn-ghost" bind:tap="onLogout">
+          退出登录
+        </button>
+      </view>
+    </view>
+
+    <!-- 未登录状态 -->
+    <view class="logged-out" wx:else>
+      <!-- 欢迎区域 -->
+      <view class="welcome-section">
+        <view class="app-logo">
+          <text class="logo-icon">🌟</text>
+        </view>
+        <text class="welcome-title">欢迎来到高端社交</text>
+        <text class="welcome-desc">连接志同道合的朋友，发现精彩内容</text>
+      </view>
+
+      <!-- 登录方式 -->
+      <view class="login-methods">
+        <block wx:for="{{authMethods}}" wx:key="id">
+          <view 
+            class="method-card {{loginLoading ? 'disabled' : ''}}" 
+            bind:tap="{{item.id === 'wechat' ? 'onWechatLogin' : 'onPhoneLogin'}}"
+            style="border-color: {{item.color}}"
+          >
+            <view class="method-icon" style="color: {{item.color}}">
+              {{item.icon}}
+            </view>
+            <view class="method-info">
+              <text class="method-name">{{item.name}}</text>
+              <text class="method-desc">{{item.description}}</text>
+            </view>
+            <view class="method-arrow">›</view>
+          </view>
+        </block>
+      </view>
+
+      <!-- 协议区域 -->
+      <view class="agreement-section">
+        <label class="agreement-checkbox">
+          <checkbox 
+            checked="{{agreement.checked}}" 
+            bindchange="onAgreementChange"
+            color="#007AFF"
+          />
+          <text class="agreement-text">
+            我已阅读并同意
+            <text 
+              class="agreement-link" 
+              wx:for="{{agreement.links}}" 
+              wx:key="name"
+              data-url="{{item.url}}"
+              bind:tap="onAgreementTap"
+            >
+              《{{item.name}}》
+            </text>
+          </text>
+        </label>
+      </view>
+
+      <!-- 加载状态 -->
+      <view class="login-loading" wx:if="{{loginLoading}}">
+        <view class="loading-spinner"></view>
+        <text class="loading-text">登录中...</text>
+      </view>
+    </view>
+  </view>
+</view>

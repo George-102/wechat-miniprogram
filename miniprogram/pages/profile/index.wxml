@@ -1,0 +1,80 @@
+<view class="profile-page">
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <text class="nav-title">个人中心</text>
+    </view>
+  </view>
+
+  <view class="profile-container" style="padding-top: {{customNavHeight}}px">
+    <!-- 用户信息卡片 -->
+    <view class="user-card">
+      <view class="user-header">
+        <view class="avatar-section">
+          <image 
+            class="user-avatar" 
+            src="{{userInfo.avatarUrl || '/images/default-avatar.png'}}"
+            bind:tap="onAvatarTap"
+          />
+          <view class="user-basic">
+            <text class="user-name">{{userInfo.nickName || '未设置昵称'}}</text>
+            <text class="user-bio">{{userInfo.bio || '这个人很懒，什么都没写'}}</text>
+          </view>
+        </view>
+        <view class="edit-btn" bind:tap="onEditProfile">
+          <text class="edit-text">编辑资料</text>
+        </view>
+      </view>
+
+      <!-- 等级进度 -->
+      <view class="level-section">
+        <level-progress
+          currentExp="{{exp}}"
+          nextLevelExp="{{nextLevelExp}}"
+          currentLevel="{{level}}"
+          nextLevel="{{level + 1}}"
+          showInfo="{{true}}"
+        />
+      </view>
+
+      <!-- 数据统计 -->
+      <view class="stats-section">
+        <view class="stat-item" bind:tap="onMenuTap" data-id="myPosts">
+          <text class="stat-number">{{stats.posts}}</text>
+          <text class="stat-label">帖子</text>
+        </view>
+        <view class="stat-item" bind:tap="onMenuTap" data-id="myLikes">
+          <text class="stat-number">{{stats.likes}}</text>
+          <text class="stat-label">获赞</text>
+        </view>
+        <view class="stat-item" bind:tap="onMenuTap" data-id="followers">
+          <text class="stat-number">{{stats.followers}}</text>
+          <text class="stat-label">粉丝</text>
+        </view>
+        <view class="stat-item" bind:tap="onMenuTap" data-id="following">
+          <text class="stat-number">{{stats.following}}</text>
+          <text class="stat-label">关注</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 功能菜单 -->
+    <view class="menu-section">
+      <view class="menu-grid">
+        <block wx:for="{{menus}}" wx:key="id">
+          <view class="menu-item" data-id="{{item.id}}" bind:tap="onMenuTap">
+            <view class="menu-icon" style="color: {{item.color}}">
+              {{item.icon}}
+            </view>
+            <text class="menu-name">{{item.name}}</text>
+          </view>
+        </block>
+      </view>
+    </view>
+
+    <!-- 退出登录 -->
+    <view class="logout-section">
+      <button class="logout-btn" bind:tap="onLogout">退出登录</button>
+    </view>
+  </view>
+</view>
