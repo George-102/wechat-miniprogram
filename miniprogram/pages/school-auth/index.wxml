@@ -1,0 +1,92 @@
+<view class="school-auth-page">
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <text class="nav-title">学校认证</text>
+    </view>
+  </view>
+
+  <view class="auth-container" style="padding-top: {{customNavHeight + 20}}px">
+    <view class="form-section">
+      <view class="form-item">
+        <text class="label">学校名称</text>
+        <input 
+          class="input" 
+          placeholder="请输入您的学校名称" 
+          value="{{schoolName}}"
+          bindinput="onSchoolNameInput"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="label">学号</text>
+        <input 
+          class="input" 
+          placeholder="请输入您的学号" 
+          value="{{studentId}}"
+          bindinput="onStudentIdInput"
+        />
+      </view>
+      
+      <view class="form-item">
+        <text class="label">认证方式</text>
+        <view class="verification-options">
+          <view 
+            class="option {{verificationType === 'studentCard' ? 'selected' : ''}}"
+            bindtap="onSelectVerificationType"
+            data-type="studentCard"
+          >
+            <text class="option-icon">🎓</text>
+            <text class="option-text">学生证</text>
+          </view>
+          <view 
+            class="option {{verificationType === 'campusCard' ? 'selected' : ''}}"
+            bindtap="onSelectVerificationType"
+            data-type="campusCard"
+          >
+            <text class="option-icon">💳</text>
+            <text class="option-text">校园卡</text>
+          </view>
+          <view 
+            class="option {{verificationType === 'admissionLetter' ? 'selected' : ''}}"
+            bindtap="onSelectVerificationType"
+            data-type="admissionLetter"
+          >
+            <text class="option-icon">📄</text>
+            <text class="option-text">录取通知书</text>
+          </view>
+        </view>
+      </view>
+      
+      <view class="form-item" wx:if="{{verificationType}}">
+        <text class="label">上传{{verificationText}}</text>
+        <view class="upload-section">
+          <view class="upload-btn" bindtap="onChooseImage">
+            <text class="upload-icon">➕</text>
+            <text class="upload-text">点击上传</text>
+          </view>
+          <image 
+            class="preview-image" 
+            src="{{imagePath}}" 
+            mode="aspectFit"
+            wx:if="{{imagePath}}"
+          />
+        </view>
+      </view>
+    </view>
+    
+    <view class="agreement-section">
+      <checkbox checked="{{agreed}}" bindchange="onAgreementChange" />
+      <text class="agreement-text">我承诺所提交的信息真实有效</text>
+    </view>
+    
+    <view class="action-buttons">
+      <button 
+        class="submit-btn {{canSubmit ? 'active' : ''}}"
+        bindtap="onSubmitAuth"
+        disabled="{{!canSubmit}}"
+      >
+        提交认证
+      </button>
+    </view>
+  </view>
+</view>

@@ -1,5 +1,8 @@
 {
   "pages": [
+    "pages/login-test/index",
+    "pages/debug-user/index",
+    "pages/test/index",
     "pages/auth/index",
     "pages/posts/index",
     "pages/search/index",
@@ -7,7 +10,8 @@
     "pages/profile/index",
     "pages/publish/index",
     "pages/post-detail/index",
-    "pages/payment/index"
+    "pages/payment/index",
+    "pages/auth/explain/index"
   ],
   "window": {
     "backgroundTextStyle": "dark",

@@ -3,7 +3,7 @@ const FormatTime = require('../../utils/formatTime.js');
 
 Page({
   data: {
-    customNavHeight: 0,
+    navBarHeight: 88, // 添加导航栏高度
     posts: [],
     loading: false,
     hasMore: true,
@@ -20,10 +20,30 @@ Page({
   },
 
   onLoad(options) {
+    // 设置导航栏高度
     this.setData({
-      customNavHeight: app.globalData.customNavHeight
+      navBarHeight: app.globalData.navBarHeight || 88
     });
-
+  
+    this.checkUserStatus();
+  },
+  
+  // 改进的用户状态检查
+  checkUserStatus() {
+    console.log('检查用户状态:', app.globalData.isLoggedIn);
+    
+    if (!app.globalData.isLoggedIn) {
+      console.log('用户未登录，跳转到登录页');
+      // 使用延时确保页面加载完成
+      setTimeout(() => {
+        wx.redirectTo({
+          url: '/pages/auth/index'
+        });
+      }, 100);
+      return;
+    }
+    
+    // 用户已登录，加载帖子
     this.loadPosts(true);
   },
 

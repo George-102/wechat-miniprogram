@@ -4,6 +4,6 @@
   "backgroundTextStyle": "dark",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "level-progress": "/components/level-progress/level-progress"
+    "custom-nav": "/components/custom-nav/custom-nav"
   }
 }

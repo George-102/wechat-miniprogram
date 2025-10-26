@@ -3,11 +3,39 @@
     "miniprogram": {
       "list": [
         {
-          "name": "/miniprogram/app.json",
-          "pathName": "/miniprogram/app.json",
+          "name": "pages/login-test/index",
+          "pathName": "pages/login-test/index",
           "query": "",
           "scene": null,
           "launchMode": "default"
+        },
+        {
+          "name": "pages/message/index",
+          "pathName": "pages/message/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/posts/index",
+          "pathName": "pages/posts/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/auth/index",
+          "pathName": "pages/auth/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
+        },
+        {
+          "name": "pages/debug-user/index",
+          "pathName": "pages/debug-user/index",
+          "query": "",
+          "launchMode": "default",
+          "scene": null
         }
       ]
     }

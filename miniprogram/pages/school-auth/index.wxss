@@ -1,0 +1,123 @@
+.school-auth-page {
+  min-height: 100vh;
+  background: #F8F9FA;
+}
+
+.auth-container {
+  padding: 0 32rpx;
+}
+
+.form-section {
+  background: white;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin-bottom: 24rpx;
+}
+
+.form-item {
+  margin-bottom: 40rpx;
+}
+
+.label {
+  display: block;
+  font-size: 28rpx;
+  font-weight: 600;
+  color: #1a1a1a;
+  margin-bottom: 16rpx;
+}
+
+.input {
+  background: #f8f9fa;
+  border-radius: 12rpx;
+  padding: 24rpx;
+  font-size: 28rpx;
+}
+
+.verification-options {
+  display: flex;
+  gap: 20rpx;
+}
+
+.option {
+  flex: 1;
+  padding: 24rpx;
+  border: 2rpx solid #f0f0f0;
+  border-radius: 12rpx;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.option.selected {
+  border-color: #007AFF;
+  background: #f0f8ff;
+}
+
+.option-icon {
+  font-size: 40rpx;
+  display: block;
+  margin-bottom: 8rpx;
+}
+
+.option-text {
+  font-size: 24rpx;
+  color: #666;
+}
+
+.upload-section {
+  text-align: center;
+}
+
+.upload-btn {
+  padding: 60rpx 40rpx;
+  border: 2rpx dashed #ddd;
+  border-radius: 12rpx;
+  background: #fafafa;
+}
+
+.upload-icon {
+  font-size: 48rpx;
+  display: block;
+  margin-bottom: 16rpx;
+  color: #999;
+}
+
+.upload-text {
+  font-size: 24rpx;
+  color: #999;
+}
+
+.preview-image {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: 8rpx;
+  margin-top: 20rpx;
+}
+
+.agreement-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 40rpx 0;
+}
+
+.agreement-text {
+  font-size: 24rpx;
+  color: #666;
+  margin-left: 16rpx;
+}
+
+.submit-btn {
+  width: 100%;
+  padding: 28rpx;
+  background: #f8f9fa;
+  border-radius: 50rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: 600;
+  color: #999;
+}
+
+.submit-btn.active {
+  background: #007AFF;
+  color: white;
+}

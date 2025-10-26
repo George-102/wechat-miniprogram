@@ -3,5 +3,7 @@
   "backgroundColor": "#F8F9FA",
   "backgroundTextStyle": "dark",
   "enablePullDownRefresh": false,
-  "usingComponents": {}
+  "usingComponents": {
+    "custom-nav": "/components/custom-nav/custom-nav"
+  }
 }

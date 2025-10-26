@@ -2,6 +2,7 @@ const app = getApp();
 
 Page({
   data: {
+    navBarHeight: 88,
     customNavHeight: 0,
     orderInfo: null,
     paymentMethods: [
@@ -14,7 +15,7 @@ Page({
 
   onLoad(options) {
     this.setData({
-      customNavHeight: app.globalData.customNavHeight
+      navBarHeight: app.globalData.navBarHeight || 88
     });
 
     // 获取订单信息，这里假设从options中获取订单id，然后从云函数获取订单详情
@@ -49,7 +50,7 @@ Page({
 
       if (result.result && result.result.success) {
         this.setData({
-          orderInfo:{ result.result.data,
+          orderInfo:{ data:result.result.data,
           formattedAmount: (result.result.data.amount / 100).toFixed(2)}
         });
       } else {

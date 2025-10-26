@@ -1,34 +1,5 @@
 <view class="search-page">
-  <!-- 自定义导航栏 -->
-  <view class="custom-nav" style="height: {{customNavHeight}}px">
-    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
-      <!-- 返回按钮 -->
-      <view class="nav-back" bind:tap="onNavBack">
-        <text class="back-icon">‹</text>
-      </view>
-      
-      <!-- 搜索框 -->
-      <view class="search-box">
-        <view class="search-input-wrapper">
-          <text class="search-icon">🔍</text>
-          <input 
-            class="search-input" 
-            placeholder="搜索帖子、用户、标签..." 
-            value="{{searchValue}}"
-            bindinput="onSearchInput"
-            bindconfirm="onSearchSubmit"
-            focus="{{autoFocus}}"
-          />
-          <view 
-            class="clear-btn {{searchValue ? 'show' : ''}}" 
-            bind:tap="onClearSearch"
-          >
-            <text class="clear-icon">×</text>
-          </view>
-        </view>
-      </view>
-    </view>
-  </view>
+  <custom-nav title="搜索" show-back="{{true}}" />
 
   <view class="search-container" style="padding-top: {{customNavHeight}}px">
     <!-- 搜索标签 -->

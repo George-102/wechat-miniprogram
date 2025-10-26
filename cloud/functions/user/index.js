@@ -1,118 +1,164 @@
 const cloud = require('wx-server-sdk')
-cloud.init({ env: cloud.DYNAMIC_CURRENT_ENV })
+cloud.init({
+  env: cloud.DYNAMIC_CURRENT_ENV
+})
 
-exports.main = async (event, context) => {
-  const wxContext = cloud.getWXContext()
-  const db = cloud.database()
-  const _ = db.command
-  
+const db = cloud.database()
+const _ = db.command
+
+exports.main = async (event) => {
   const { action } = event
-  
+  const wxContext = cloud.getWXContext()
+  const { OPENID: openid } = wxContext
+
+  console.log('User云函数被调用:', { action, openid })
+
   try {
     switch (action) {
-      case 'getProfile':
-        // 获取用户信息
+      case 'getUserInfo': {
+        console.log('获取用户信息，OpenID:', openid)
+        
         const userRes = await db.collection('users').where({
-          _openid: wxContext.OPENID
+          _openid: openid
         }).get()
-        
+
+        console.log('用户查询结果:', userRes)
+
         if (userRes.data.length === 0) {
-          return { code: 404, message: '用户不存在' }
+          // 如果用户不存在，创建一个默认用户
+          console.log('用户不存在，创建默认用户')
+          const defaultUser = {
+            _openid: openid,
+            avatarUrl: '/images/default-avatar.png',
+            nickName: '微信用户',
+            gender: 0,
+            bio: '这个人很懒，什么都没写~',
+            level: 1,
+            exp: 0,
+            postCount: 0,
+            likeCount: 0,
+            followerCount: 0,
+            followingCount: 0,
+            balance: 0,
+            createTime: db.serverDate(),
+            lastLoginTime: db.serverDate(),
+            status: 'active'
+          }
+
+          try {
+            const addRes = await db.collection('users').add({
+              data: defaultUser
+            })
+            console.log('默认用户创建成功:', addRes)
+            return {
+              success: true,
+              data: { ...defaultUser, _id: addRes._id }
+            }
+          } catch (createError) {
+            console.error('创建默认用户失败:', createError)
+            throw new Error('用户不存在且创建失败: ' + createError.message)
+          }
         }
-        
+
         return {
-          code: 200,
+          success: true,
           data: userRes.data[0]
         }
+      }
+
+      case 'getOrCreateUser': {
+        const { userInfo } = event
         
-      case 'updateProfile':
-        // 更新用户资料
-        const { nickname, avatar } = event
+        console.log('获取或创建用户:', { userInfo, openid })
+
+        const userRes = await db.collection('users').where({
+          _openid: openid
+        }).get()
+
+        let userData
+
+        if (userRes.data.length === 0) {
+          // 创建新用户
+          const newUser = {
+            _openid: openid,
+            avatarUrl: userInfo?.avatarUrl || '/images/default-avatar.png',
+            nickName: userInfo?.nickName || '微信用户',
+            gender: userInfo?.gender || 0,
+            country: userInfo?.country || '',
+            province: userInfo?.province || '',
+            city: userInfo?.city || '',
+            language: userInfo?.language || 'zh_CN',
+            bio: '这个人很懒，什么都没写~',
+            level: 1,
+            exp: 0,
+            postCount: 0,
+            likeCount: 0,
+            followerCount: 0,
+            followingCount: 0,
+            balance: 0,
+            createTime: db.serverDate(),
+            lastLoginTime: db.serverDate(),
+            updateTime: db.serverDate(),
+            status: 'active'
+          }
+
+          const addRes = await db.collection('users').add({
+            data: newUser
+          })
+          userData = { ...newUser, _id: addRes._id }
+        } else {
+          // 更新用户信息
+          userData = userRes.data[0]
+          await db.collection('users').where({
+            _openid: openid
+          }).update({
+            data: {
+              lastLoginTime: db.serverDate(),
+              updateTime: db.serverDate(),
+              ...(userInfo && {
+                avatarUrl: userInfo.avatarUrl,
+                nickName: userInfo.nickName,
+                gender: userInfo.gender
+              })
+            }
+          })
+        }
+
+        return {
+          success: true,
+          data: userData
+        }
+      }
+
+      case 'updateUserInfo': {
+        const { userInfo } = event
+        
         await db.collection('users').where({
-          _openid: wxContext.OPENID
+          _openid: openid
         }).update({
           data: {
-            nickname: nickname,
-            avatar: avatar,
-            updatedAt: db.serverDate()
+            ...userInfo,
+            updateTime: db.serverDate()
           }
         })
-        
-        const updatedUser = await db.collection('users').where({
-          _openid: wxContext.OPENID
-        }).get()
-        
+
         return {
-          code: 200,
-          data: updatedUser.data[0]
+          success: true,
+          message: '用户信息更新成功'
         }
-        
-      case 'dailySign':
-        // 每日签到
-        const today = new Date()
-        today.setHours(0, 0, 0, 0)
-        
-        // 检查今天是否已签到
-        const signRes = await db.collection('signRecords').where({
-          userId: wxContext.OPENID,
-          signDate: db.serverDate({
-            offset: 0 - today.getTime()
-          })
-        }).get()
-        
-        if (signRes.data.length > 0) {
-          return { code: 400, message: '今天已经签到过了' }
-        }
-        
-        // 记录签到
-        await db.collection('signRecords').add({
-          data: {
-            userId: wxContext.OPENID,
-            signDate: db.serverDate(),
-            expReward: 5,
-            createdAt: db.serverDate()
-          }
-        })
-        
-        // 增加经验
-        await db.collection('users').where({
-          _openid: wxContext.OPENID
-        }).update({
-          data: {
-            experience: _.inc(5),
-            updatedAt: db.serverDate()
-          }
-        })
-        
-        return {
-          code: 200,
-          message: '签到成功，获得5经验'
-        }
-        
-      case 'checkSignStatus':
-        // 检查签到状态
-        const checkToday = new Date()
-        checkToday.setHours(0, 0, 0, 0)
-        
-        const checkSignRes = await db.collection('signRecords').where({
-          userId: wxContext.OPENID,
-          signDate: db.serverDate({
-            offset: 0 - checkToday.getTime()
-          })
-        }).get()
-        
-        return {
-          code: 200,
-          data: {
-            hasSigned: checkSignRes.data.length > 0
-          }
-        }
-        
+      }
+
       default:
-        return { code: 400, message: '未知操作' }
+        return {
+          success: false,
+          message: '未知操作'
+        }
     }
   } catch (error) {
-    console.error('用户云函数错误:', error)
-    return { code: 500, message: '服务器错误' }
+    console.error('User云函数错误:', error)
+    return {
+      success: false,
+      message: error.message
+    }
   }
 }

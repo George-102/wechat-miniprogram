@@ -65,40 +65,111 @@ App({
 
   // 初始化云开发
   initCloud() {
+    console.log('开始初始化云开发...');
+    
     if (!wx.cloud) {
       console.error('请使用 2.2.3 或以上的基础库以使用云能力');
+      wx.showModal({
+        title: '提示',
+        content: '当前微信版本过低，无法使用云能力，请升级到最新微信版本后重试。',
+        showCancel: false
+      });
       return;
     }
 
-    wx.cloud.init({
-      env: 'your-cloud-env-id', // 替换为您的云环境ID
-      traceUser: true,
-    });
+    try {
+      // 方法1：使用具体的环境ID（推荐）
+      wx.cloud.init({
+        env: 'cloud1-3gaqjuvuf331ae24', 
+        traceUser: true,
+      });
 
-    this.globalData.cloudInitialized = true;
-    console.log('云开发初始化成功');
+      // 验证云开发是否初始化成功
+      console.log('云开发初始化配置:', wx.cloud);
+      console.log('云开发环境状态:', wx.cloud.constructor === Function);
+      
+      this.globalData.cloudInitialized = true;
+      console.log('云开发初始化成功');
+      
+      // 测试云开发功能
+      this.testCloudFunction();
+      
+    } catch (error) {
+      console.error('云开发初始化失败:', error);
+      this.globalData.cloudInitialized = false;
+      
+      wx.showToast({
+        title: '云服务初始化失败',
+        icon: 'none'
+      });
+    }
+  },
+
+  // 测试云函数调用
+  async testCloudFunction() {
+    try {
+      console.log('测试云函数调用...');
+      // 调用一个简单的云函数来验证
+      const result = await wx.cloud.callFunction({
+        name: 'user',
+        data: {
+          action: 'getUserInfo'
+        }
+      });
+      console.log('云函数测试调用成功:', result);
+    } catch (error) {
+      console.log('云函数测试调用失败（可能是正常的，如果用户未登录）:', error);
+    }
   },
 
   // 获取系统信息
   getSystemInfo() {
     try {
       const systemInfo = wx.getSystemInfoSync();
-      this.globalData.systemInfo = systemInfo;
-      
-      // 设置自定义状态栏高度
-      const { statusBarHeight, platform } = systemInfo;
-      this.globalData.customNavHeight = statusBarHeight + 44;
-      
       console.log('系统信息:', systemInfo);
+      
+      // 获取状态栏高度
+      const statusBarHeight = systemInfo.statusBarHeight;
+      
+      // 计算导航栏高度（状态栏高度 + 44px）
+      const navBarHeight = statusBarHeight + 44;
+      
+      this.globalData.systemInfo = systemInfo;
+      this.globalData.statusBarHeight = statusBarHeight;
+      this.globalData.navBarHeight = navBarHeight;
+      this.globalData.customNavHeight = navBarHeight;
+      
+      console.log('状态栏高度:', statusBarHeight);
+      console.log('导航栏总高度:', navBarHeight);
+      
     } catch (error) {
       console.error('获取系统信息失败:', error);
+      // 设置默认值
+      this.globalData.statusBarHeight = 44;
+      this.globalData.navBarHeight = 88;
+      this.globalData.customNavHeight = 88;
     }
   },
 
   // 检查登录状态
   checkLoginStatus() {
+    // 等待云开发初始化完成
+    if (!this.globalData.cloudInitialized) {
+      console.log('云开发未初始化，延迟检查登录状态');
+      setTimeout(() => {
+        this.checkLoginStatus();
+      }, 1000);
+      return;
+    }
+
     const token = wx.getStorageSync('token');
     const userInfo = wx.getStorageSync('userInfo');
+    
+    console.log('检查登录状态:', { 
+      hasToken: !!token, 
+      hasUserInfo: !!userInfo,
+      cloudInitialized: this.globalData.cloudInitialized 
+    });
     
     if (token && userInfo) {
       this.globalData.userInfo = userInfo;
@@ -106,6 +177,7 @@ App({
       console.log('用户已登录', userInfo);
     } else {
       this.globalData.isLoggedIn = false;
+      this.globalData.userInfo = null;
       console.log('用户未登录');
     }
   },
@@ -117,6 +189,16 @@ App({
       this.syncUserInfo();
     }
   },
+
+  // 在 app.js 中添加全局登录状态监控
+  watchLoginStatus() {
+  // 监控存储变化
+  wx.onStorageChanged && wx.onStorageChanged((res) => {
+    if (res.key === 'userInfo' || res.key === 'token') {
+      this.checkLoginStatus();
+    }
+  });
+},
 
   // 同步用户信息
   async syncUserInfo() {
@@ -201,7 +283,8 @@ App({
     userInfo: null,
     isLoggedIn: false,
     systemInfo: null,
-    customNavHeight: 0,
+    statusBarHeight: 20,
+    customNavHeight: 64,
     cloudInitialized: false,
     networkType: 'wifi',
     
@@ -221,8 +304,7 @@ App({
     // 配置信息
     config: {
       appName: '高端社交',
-      version: '1.0.0',
-      apiBaseUrl: 'https://your-api-domain.com'
+      version: '1.0.0'
     }
   }
 });

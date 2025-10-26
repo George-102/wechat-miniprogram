@@ -4,6 +4,6 @@
   "backgroundTextStyle": "dark",
   "enablePullDownRefresh": false,
   "usingComponents": {
-    "post-card": "/components/post-card/post-card"
+    "custom-nav": "/components/custom-nav/custom-nav"
   }
 }

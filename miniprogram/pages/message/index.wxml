@@ -1,18 +1,15 @@
 <view class="message-page">
   <!-- 自定义导航栏 -->
-  <view class="custom-nav" style="height: {{customNavHeight}}px">
-    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
-      <text class="nav-title">消息</text>
-      <view class="nav-actions">
-        <view class="nav-btn" bind:tap="onChatTap">
-          <text class="btn-icon">💬</text>
-        </view>
-        <view class="nav-btn" bind:tap="onClearAll">
-          <text class="btn-icon">🗑️</text>
-        </view>
+  <custom-nav title="消息" show-back="{{false}}">
+    <view slot="right" class="nav-actions">
+      <view class="nav-btn" bind:tap="onChatTap">
+        <text class="btn-icon">💬</text>
+      </view>
+      <view class="nav-btn" bind:tap="onClearAll">
+        <text class="btn-icon">🗑️</text>
       </view>
     </view>
-  </view>
+  </custom-nav>
 
   <view class="message-container" style="padding-top: {{customNavHeight}}px">
     <!-- 标签导航 -->

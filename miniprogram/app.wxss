@@ -443,3 +443,18 @@ page {
     box-shadow: 0 8rpx 40rpx rgba(0, 0, 0, 0.3);
   }
 }
+
+/* 确保页面内容不会被导航栏遮挡 */
+.page-container {
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* 安全区域处理 */
+.safe-area-inset-bottom {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.safe-area-inset-top {
+  padding-top: env(safe-area-inset-top);
+}

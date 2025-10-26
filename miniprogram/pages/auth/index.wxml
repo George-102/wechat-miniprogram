@@ -1,10 +1,6 @@
 <view class="auth-page">
   <!-- 自定义导航栏 -->
-  <view class="custom-nav" style="height: {{customNavHeight}}px">
-    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
-      <text class="nav-title">登录</text>
-    </view>
-  </view>
+  <custom-nav title="登录" show-back="{{false}}" />
 
   <view class="auth-container" style="padding-top: {{customNavHeight}}px">
     <!-- 已登录状态 -->
@@ -31,10 +27,10 @@
       </view>
 
       <view class="action-buttons">
-        <button class="btn btn-primary" bind:tap="redirectToHome">
+        <button class="btn btn-primary" bindtap="redirectToHome">
           进入首页
         </button>
-        <button class="btn btn-ghost" bind:tap="onLogout">
+        <button class="btn btn-ghost" bindtap="onLogout">
           退出登录
         </button>
       </view>
@@ -53,45 +49,69 @@
 
       <!-- 登录方式 -->
       <view class="login-methods">
-        <block wx:for="{{authMethods}}" wx:key="id">
-          <view 
-            class="method-card {{loginLoading ? 'disabled' : ''}}" 
-            bind:tap="{{item.id === 'wechat' ? 'onWechatLogin' : 'onPhoneLogin'}}"
-            style="border-color: {{item.color}}"
-          >
-            <view class="method-icon" style="color: {{item.color}}">
-              {{item.icon}}
-            </view>
+        <!-- 微信登录按钮 -->
+        <button 
+          class="method-card wechat-login-btn" 
+          open-type="getUserInfo"
+          bindgetuserinfo="onGetUserInfo"
+          style="border: 1rpx solid #09BB07; background: transparent;"
+          wx:if="{{!loginLoading}}"
+        >
+          <view class="method-content">
+            <view class="method-icon" style="color: #09BB07">💬</view>
             <view class="method-info">
-              <text class="method-name">{{item.name}}</text>
-              <text class="method-desc">{{item.description}}</text>
+              <text class="method-name">微信一键登录</text>
+              <text class="method-desc">使用微信授权快速登录</text>
             </view>
             <view class="method-arrow">›</view>
           </view>
-        </block>
+        </button>
+
+        <!-- 加载状态 -->
+        <view class="method-card disabled" wx:else style="border: 1rpx solid #09BB07;">
+          <view class="method-content">
+            <view class="method-icon" style="color: #09BB07">💬</view>
+            <view class="method-info">
+              <text class="method-name">微信一键登录</text>
+              <text class="method-desc">登录中...</text>
+            </view>
+            <view class="method-arrow">›</view>
+          </view>
+        </view>
+
+        <!-- 手机号登录 -->
+        <view 
+          class="method-card {{loginLoading ? 'disabled' : ''}}" 
+          bindtap="onPhoneLogin"
+          style="border: 1rpx solid #007AFF"
+        >
+          <view class="method-content">
+            <view class="method-icon" style="color: #007AFF">📱</view>
+            <view class="method-info">
+              <text class="method-name">手机号验证</text>
+              <text class="method-desc">输入手机号模拟登录</text>
+            </view>
+            <view class="method-arrow">›</view>
+          </view>
+        </view>
       </view>
 
       <!-- 协议区域 -->
       <view class="agreement-section">
-        <label class="agreement-checkbox">
+        <view class="agreement-checkbox">
           <checkbox 
-            checked="{{agreement.checked}}" 
+            value="agree"
+            checked="{{agreementChecked}}" 
             bindchange="onAgreementChange"
             color="#007AFF"
           />
           <text class="agreement-text">
             我已阅读并同意
-            <text 
-              class="agreement-link" 
-              wx:for="{{agreement.links}}" 
-              wx:key="name"
-              data-url="{{item.url}}"
-              bind:tap="onAgreementTap"
-            >
-              《{{item.name}}》
+            <text class="agreement-link" catchtap="showAgreementDetail">
+              《用户协议和隐私政策》
             </text>
           </text>
-        </label>
+        </view>
       </view>
 
       <!-- 加载状态 -->
@@ -99,6 +119,18 @@
         <view class="loading-spinner"></view>
         <text class="loading-text">登录中...</text>
       </view>
+    </view>
+  </view>
+
+  <!-- 调试信息 -->
+  <view class="debug-section" wx:if="{{true}}">
+    <text class="debug-title">🔧 调试信息</text>
+    <text class="debug-item">登录状态: {{isLogin ? '✅ 已登录' : '❌ 未登录'}}</text>
+    <text class="debug-item">加载中: {{loginLoading ? '🔄 是' : '⏹️ 否'}}</text>
+    <text class="debug-item">协议同意: {{agreementChecked ? '✅ 是' : '❌ 否'}}</text>
+    <view class="debug-buttons">
+      <button class="debug-btn" bindtap="testAgreement">测试协议状态</button>
+      <button class="debug-btn" bindtap="forceAgreementTrue">强制同意协议</button>
     </view>
   </view>
 </view>

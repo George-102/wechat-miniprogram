@@ -3,6 +3,7 @@ const FormatTime = require('../../utils/formatTime.js');
 
 Page({
   data: {
+    navBarHeight: 88,
     customNavHeight: 0,
     searchValue: '',
     searchHistory: [],
@@ -28,7 +29,7 @@ Page({
 
   onLoad(options) {
     this.setData({
-      customNavHeight: app.globalData.customNavHeight
+      navBarHeight: app.globalData.navBarHeight || 88
     });
 
     // 加载搜索历史
