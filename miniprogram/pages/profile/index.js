@@ -3,7 +3,6 @@ const FormatTime = require('../../utils/formatTime.js');
 
 Page({
   data: {
-    navBarHeight: 88,
     customNavHeight: 0,
     userInfo: null,
     stats: {
@@ -58,7 +57,7 @@ Page({
 
   onLoad(options) {
     this.setData({
-      navBarHeight: app.globalData.navBarHeight || 88
+      customNavHeight: app.globalData.customNavHeight
     });
   },
 
@@ -72,48 +71,64 @@ Page({
 
   // 加载用户数据
   async loadUserData() {
-    if (!app.globalData.isLoggedIn) {
-      wx.redirectTo({
-        url: '/pages/auth/index'
-      });
-      return;
-    }
+  if (!app.globalData.isLoggedIn) {
+    wx.redirectTo({
+      url: '/pages/auth/index'
+    });
+    return;
+  }
 
-    app.showLoading('加载中...');
+  app.showLoading('加载中...');
 
-    try {
-      const result = await wx.cloud.callFunction({
-        name: 'user',
-        data: {
-          action: 'getProfile'
-        }
-      });
-
-      if (result.result && result.result.success) {
-        const { userInfo, stats, levelInfo } = result.result.data;
-        
-        this.setData({
-          userInfo: userInfo,
-          stats: stats,
-          level: levelInfo.level,
-          exp: levelInfo.exp,
-          nextLevelExp: levelInfo.nextLevelExp,
-          progress: Math.min((levelInfo.exp / levelInfo.nextLevelExp) * 100, 100)
-        });
-
-        wx.setStorageSync('userInfo', userInfo);
-        app.globalData.userInfo = userInfo;
-      } else {
-        throw new Error(result.result.message || '加载失败');
+  try {
+    // 使用 getUserInfo 而不是 getProfile
+    const result = await wx.cloud.callFunction({
+      name: 'user',
+      data: {
+        action: 'getUserInfo'
       }
-    } catch (error) {
-      console.error('加载用户数据失败:', error);
-      app.showError('加载失败，请重试');
-    } finally {
-      wx.hideLoading();
-      wx.stopPullDownRefresh();
+    });
+
+    if (result.result && result.result.success) {
+      const userInfo = result.result.data;
+      
+      // 构建统计信息
+      const stats = {
+        posts: userInfo.postCount || 0,
+        likes: userInfo.likeCount || 0,
+        followers: userInfo.followerCount || 0,
+        following: userInfo.followingCount || 0
+      };
+
+      // 构建等级信息
+      const levelInfo = {
+        level: userInfo.level || 1,
+        exp: userInfo.exp || 0,
+        nextLevelExp: userInfo.nextLevelExp || 100
+      };
+
+      this.setData({
+        userInfo: userInfo,
+        stats: stats,
+        level: levelInfo.level,
+        exp: levelInfo.exp,
+        nextLevelExp: levelInfo.nextLevelExp,
+        progress: Math.min((levelInfo.exp / levelInfo.nextLevelExp) * 100, 100)
+      });
+
+      wx.setStorageSync('userInfo', userInfo);
+      app.globalData.userInfo = userInfo;
+    } else {
+      throw new Error(result.result.message || '加载失败');
     }
-  },
+  } catch (error) {
+    console.error('加载用户数据失败:', error);
+    app.showError('加载失败，请重试');
+  } finally {
+    wx.hideLoading();
+    wx.stopPullDownRefresh();
+  }
+},
 
   // 点击菜单项
   onMenuTap(e) {

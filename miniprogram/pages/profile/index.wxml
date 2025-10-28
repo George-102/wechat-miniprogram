@@ -1,5 +1,10 @@
 <view class="profile-page">
-  <custom-nav title="我的" show-back="{{false}}" />
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <text class="nav-title">我的</text>
+    </view>
+  </view>
 
   <view class="profile-container" style="padding-top: {{customNavHeight}}px">
     <!-- 用户信息卡片 -->

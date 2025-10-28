@@ -3,7 +3,6 @@ const FormatTime = require('../../utils/formatTime.js');
 
 Page({
   data: {
-    navBarHeight: 88, // 添加导航栏高度
     activeTab: 'all',
     customNavHeight: 0,
     activeTab: 'all', // all, unread, system
@@ -31,7 +30,7 @@ Page({
   onLoad(options) {
     // 设置导航栏高度
     this.setData({
-      navBarHeight: app.globalData.navBarHeight || 88
+      customNavHeight: app.globalData.customNavHeight
     });
 
     this.loadMessages(true);

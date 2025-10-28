@@ -1,17 +1,20 @@
 <view class="posts-page">
-  <!-- 使用统一的导航栏组件 -->
-  <custom-nav title="发现" show-back="{{false}}">
-    <view slot="right" class="nav-actions">
-      <view class="nav-btn" bind:tap="onSearchTap">
-        <text class="btn-icon">🔍</text>
-      </view>
-      <view class="nav-btn" bind:tap="onPublishTap">
-        <text class="btn-icon">✏️</text>
+  <!-- 自定义导航栏 -->
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <text class="nav-title">发现</text>
+      <view class="nav-actions">
+        <view class="nav-btn" bind:tap="onSearchTap">
+          <text class="btn-icon">🔍</text>
+        </view>
+        <view class="nav-btn" bind:tap="onPublishTap">
+          <text class="btn-icon">✏️</text>
+        </view>
       </view>
     </view>
-  </custom-nav>
+  </view>
 
-  <view class="posts-container" style="padding-top: {{navBarHeight}}px">
+  <view class="posts-container" style="padding-top: {{customNavHeight}}px">
     <!-- 分类导航 -->
     <view class="categories-nav">
       <scroll-view class="categories-scroll" scroll-x>

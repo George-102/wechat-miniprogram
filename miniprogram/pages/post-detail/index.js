@@ -4,7 +4,6 @@ const FormatTime = require('../../utils/formatTime.js');
 Page({
   data: {
     customNavHeight: 0,
-    navBarHeight: 88,
     postId: '',
     post: null,
     comments: [],
@@ -26,7 +25,7 @@ Page({
     const { id } = options;
     // 设置导航栏高度
     this.setData({
-      navBarHeight: app.globalData.navBarHeight || 88,
+      customNavHeight: app.globalData.customNavHeight,
       postId: id
     });
 

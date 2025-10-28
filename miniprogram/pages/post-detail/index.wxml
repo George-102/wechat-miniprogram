@@ -1,12 +1,18 @@
 <view class="post-detail-page">
   <!-- 自定义导航栏 -->
-  <custom-nav title="帖子详情" show-back="{{true}}" show-back-text="{{true}}">
-    <view slot="right" class="nav-actions">
-      <view class="nav-btn" bind:tap="onShowShareMenu">
-        <text class="btn-icon">↗️</text>
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <view class="nav-back" bind:tap="onNavigateBack">
+        <text class="back-icon">‹</text>
+      </view>
+      <text class="nav-title">帖子详情</text>
+      <view class="nav-actions">
+        <view class="nav-btn" bind:tap="onShowShareMenu">
+          <text class="btn-icon">↗️</text>
+        </view>
       </view>
     </view>
-  </custom-nav>
+  </view>
 
   <view class="detail-container" style="padding-top: {{customNavHeight}}px">
     <!-- 加载状态 -->

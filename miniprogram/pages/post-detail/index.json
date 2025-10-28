@@ -4,7 +4,6 @@
   "backgroundTextStyle": "dark",
   "enablePullDownRefresh": true,
   "usingComponents": {
-    "comment-list": "/components/comment-list/comment-list",
-    "custom-nav": "/components/custom-nav/custom-nav"
+    "comment-list": "/components/comment-list/comment-list"
   }
 }

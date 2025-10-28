@@ -3,7 +3,6 @@ const app = getApp();
 
 Page({
   data: {
-    navBarHeight: 88, 
     userInfo: null,
     isLogin: false,
     loginLoading: false,
@@ -14,7 +13,7 @@ Page({
   onLoad(options) {
     // 设置导航栏高度
     this.setData({
-      navBarHeight: app.globalData.navBarHeight || 88
+      customNavHeight: app.globalData.customNavHeight
     });
     
     this.checkCloudStatus();

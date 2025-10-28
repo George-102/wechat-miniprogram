@@ -3,33 +3,25 @@ const FormatTime = require('../../utils/formatTime.js');
 
 Page({
   data: {
-    navBarHeight: 88,
     customNavHeight: 0,
-    searchValue: '',
-    searchHistory: [],
-    hotSearches: [
-      { keyword: '科技', count: 1254 },
-      { keyword: '美食', count: 987 },
-      { keyword: '旅行', count: 856 },
-      { keyword: '编程', count: 743 },
-      { keyword: '摄影', count: 632 }
+    searchKeyword: '',
+    searchResult: null,
+    activeTab: 'realtime', // realtime, history
+    loading: false,
+    hotTags: [
+      { id: 1, name: '求助', count: 1234 },
+      { id: 2, name: '交友', count: 856 },
+      { id: 3, name: '闲置', count: 642 },
+      { id: 4, name: '跑腿', count: 521 },
+      { id: 5, name: '吃瓜', count: 487 }
     ],
-    searchResults: [],
-    searching: false,
-    hasMore: true,
-    page: 1,
-    pageSize: 10,
-    activeTab: 'post', // post, user, tag
-    tabs: [
-      { id: 'post', name: '帖子' },
-      { id: 'user', name: '用户' },
-      { id: 'tag', name: '标签' }
-    ]
+    searchHistory: [],
+    autoFocus: true
   },
 
   onLoad(options) {
     this.setData({
-      navBarHeight: app.globalData.navBarHeight || 88
+      customNavHeight: app.globalData.customNavHeight
     });
 
     // 加载搜索历史
@@ -37,18 +29,27 @@ Page({
   },
 
   onShow() {
-    // 刷新搜索历史
-    this.loadSearchHistory();
+    // 检查登录状态
+    if (!app.globalData.isLoggedIn) {
+      wx.redirectTo({
+        url: '/pages/auth/index'
+      });
+      return;
+    }
   },
 
   // 加载搜索历史
   loadSearchHistory() {
     const history = wx.getStorageSync('searchHistory') || [];
-    this.setData({ searchHistory: history });
+    this.setData({
+      searchHistory: history
+    });
   },
 
   // 保存搜索历史
   saveSearchHistory(keyword) {
+    if (!keyword.trim()) return;
+
     let history = wx.getStorageSync('searchHistory') || [];
     
     // 移除已存在的关键词
@@ -57,61 +58,41 @@ Page({
     // 添加到开头
     history.unshift(keyword);
     
-    // 只保留最近10条
-    history = history.slice(0, 10);
+    // 限制历史记录数量
+    if (history.length > 10) {
+      history = history.slice(0, 10);
+    }
     
     wx.setStorageSync('searchHistory', history);
-    this.setData({ searchHistory: history });
+    this.setData({
+      searchHistory: history
+    });
   },
 
-  // 输入搜索内容
+  // 搜索输入
   onSearchInput(e) {
     this.setData({
-      searchValue: e.detail.value
+      searchKeyword: e.detail.value
     });
+  },
 
-    // 实时搜索
-    if (e.detail.value.trim()) {
-      this.debouncedSearch();
-    } else {
-      this.setData({
-        searchResults: [],
-        searching: false
-      });
+  // 确认搜索
+  onSearchConfirm() {
+    const keyword = this.data.searchKeyword.trim();
+    if (!keyword) {
+      app.showError('请输入搜索关键词');
+      return;
     }
-  },
 
-  // 防抖搜索
-  debouncedSearch: null,
-
-  onReady() {
-    // 初始化防抖函数
-    this.debouncedSearch = this.debounce(() => {
-      this.doSearch();
-    }, 300);
-  },
-
-  // 防抖函数
-  debounce(func, wait) {
-    let timeout;
-    return function executedFunction(...args) {
-      const later = () => {
-        clearTimeout(timeout);
-        func(...args);
-      };
-      clearTimeout(timeout);
-      timeout = setTimeout(later, wait);
-    };
+    this.saveSearchHistory(keyword);
+    this.performSearch(keyword);
   },
 
   // 执行搜索
-  async doSearch() {
-    if (!this.data.searchValue.trim()) return;
-
+  async performSearch(keyword) {
     this.setData({
-      searching: true,
-      page: 1,
-      searchResults: []
+      loading: true,
+      searchResult: null
     });
 
     try {
@@ -119,185 +100,176 @@ Page({
         name: 'search',
         data: {
           action: 'search',
-          keyword: this.data.searchValue,
-          type: this.data.activeTab,
-          page: this.data.page,
-          pageSize: this.data.pageSize
+          keyword: keyword,
+          type: 'post',
+          page: 1,
+          pageSize: 20
         }
       });
 
       if (result.result && result.result.success) {
-        const { results, hasMore } = result.result.data;
-        
-        // 格式化结果
-        const formattedResults = results.map(item => {
-          if (this.data.activeTab === 'post') {
-            return {
-              ...item,
-              createTime: FormatTime.friendlyTime(item.createTime)
-            };
-          }
-          return item;
-        });
+        const posts = result.result.data.results.map(post => ({
+          ...post,
+          createTime: FormatTime.friendlyTime(post.createTime)
+        }));
 
         this.setData({
-          searchResults: formattedResults,
-          hasMore: hasMore
+          searchResult: {
+            posts: posts,
+            hasMore: result.result.data.hasMore
+          },
+          loading: false
         });
-
-        // 保存搜索历史
-        this.saveSearchHistory(this.data.searchValue);
       } else {
         throw new Error(result.result.message || '搜索失败');
       }
     } catch (error) {
       console.error('搜索失败:', error);
       app.showError('搜索失败，请重试');
-    } finally {
-      this.setData({ searching: false });
+      this.setData({
+        loading: false
+      });
     }
-  },
-
-  // 搜索提交
-  onSearchSubmit() {
-    if (!this.data.searchValue.trim()) {
-      app.showError('请输入搜索内容');
-      return;
-    }
-
-    this.doSearch();
-  },
-
-  // 清除搜索
-  onClearSearch() {
-    this.setData({
-      searchValue: '',
-      searchResults: [],
-      searching: false
-    });
-  },
-
-  // 点击历史记录
-  onHistoryTap(e) {
-    const { keyword } = e.currentTarget.dataset;
-    this.setData({
-      searchValue: keyword
-    });
-    this.doSearch();
-  },
-
-  // 点击热门搜索
-  onHotSearchTap(e) {
-    const { keyword } = e.currentTarget.dataset;
-    this.setData({
-      searchValue: keyword
-    });
-    this.doSearch();
-  },
-
-  // 清除历史记录
-  onClearHistory() {
-    wx.showModal({
-      title: '确认清除',
-      content: '确定要清除搜索历史吗？',
-      success: (res) => {
-        if (res.confirm) {
-          wx.removeStorageSync('searchHistory');
-          this.setData({ searchHistory: [] });
-          app.showSuccess('已清除搜索历史');
-        }
-      }
-    });
   },
 
   // 切换标签
-  onTabTap(e) {
+  onTabSwitch(e) {
     const { tab } = e.currentTarget.dataset;
-    
     if (tab === this.data.activeTab) return;
 
     this.setData({
-      activeTab: tab,
-      searchResults: [],
-      page: 1
+      activeTab: tab
     });
 
-    // 如果有搜索内容，重新搜索
-    if (this.data.searchValue.trim()) {
-      this.doSearch();
+    // 这里可以根据标签重新搜索
+    if (this.data.searchKeyword) {
+      this.performSearch(this.data.searchKeyword);
     }
   },
 
-  // 加载更多
-  onLoadMore() {
-    if (!this.data.hasMore || this.data.searching) return;
-
+  // 点击热门标签
+  onHotTagTap(e) {
+    const { tag } = e.currentTarget.dataset;
     this.setData({
-      page: this.data.page + 1
+      searchKeyword: tag
     });
-    this.loadMoreResults();
+    this.performSearch(tag);
   },
 
-  // 加载更多结果
-  async loadMoreResults() {
-    this.setData({ searching: true });
+  // 点击历史记录
+  onHistoryItemTap(e) {
+    const { keyword } = e.currentTarget.dataset;
+    this.setData({
+      searchKeyword: keyword
+    });
+    this.performSearch(keyword);
+  },
 
+  // 删除单个历史记录
+  onDeleteHistoryItem(e) {
+    const { keyword } = e.currentTarget.dataset;
+    let history = this.data.searchHistory.filter(item => item !== keyword);
+    
+    wx.setStorageSync('searchHistory', history);
+    this.setData({
+      searchHistory: history
+    });
+
+    e.stopPropagation(); // 阻止事件冒泡
+  },
+
+  // 清空搜索历史
+  onClearHistory() {
+    wx.showModal({
+      title: '确认清空',
+      content: '确定要清空搜索历史吗？',
+      success: (res) => {
+        if (res.confirm) {
+          wx.removeStorageSync('searchHistory');
+          this.setData({
+            searchHistory: []
+          });
+          app.showSuccess('已清空搜索历史');
+        }
+      }
+    });
+  },
+
+  // 取消搜索
+  onCancelSearch() {
+    wx.navigateBack();
+  },
+
+  // 返回上一页
+  onNavigateBack() {
+    wx.navigateBack();
+  },
+
+  // 点赞帖子
+  async onLikePost(e) {
+    const { postid, liked } = e.detail;
+    
     try {
       const result = await wx.cloud.callFunction({
-        name: 'search',
+        name: 'post',
         data: {
-          action: 'search',
-          keyword: this.data.searchValue,
-          type: this.data.activeTab,
-          page: this.data.page,
-          pageSize: this.data.pageSize
+          action: 'likePost',
+          postId: postid,
+          isLiked: liked
         }
       });
 
-      if (result.result && result.result.success) {
-        const { results, hasMore } = result.result.data;
-        
-        const formattedResults = results.map(item => {
-          if (this.data.activeTab === 'post') {
-            return {
-              ...item,
-              createTime: FormatTime.friendlyTime(item.createTime)
-            };
-          }
-          return item;
-        });
-
-        this.setData({
-          searchResults: [...this.data.searchResults, ...formattedResults],
-          hasMore: hasMore
-        });
+      if (!result.result.success) {
+        // 回退状态
+        this.rollbackLikeStatus(postid, liked);
+        app.showError('操作失败');
       }
     } catch (error) {
-      console.error('加载更多失败:', error);
-      app.showError('加载失败');
-    } finally {
-      this.setData({ searching: false });
+      console.error('点赞失败:', error);
+      this.rollbackLikeStatus(postid, liked);
+      app.showError('操作失败');
     }
   },
 
-  // 点击搜索结果
-  onResultTap(e) {
-    const { item, type } = e.currentTarget.dataset;
-    
-    switch (type) {
-      case 'post':
-        wx.navigateTo({
-          url: `/pages/post-detail/index?id=${item._id}`
-        });
-        break;
-      case 'user':
-        wx.navigateTo({
-          url: `/pages/profile/other?id=${item._id}`
-        });
-        break;
-      case 'tag':
-        // 跳转到标签页面
-        break;
-    }
+  // 回退点赞状态
+  rollbackLikeStatus(postId, isLiked) {
+    if (!this.data.searchResult) return;
+
+    const posts = this.data.searchResult.posts.map(post => {
+      if (post._id === postId) {
+        return {
+          ...post,
+          isLiked: !isLiked,
+          likeCount: isLiked ? post.likeCount - 1 : post.likeCount + 1
+        };
+      }
+      return post;
+    });
+
+    this.setData({
+      'searchResult.posts': posts
+    });
+  },
+
+  // 评论帖子
+  onCommentPost(e) {
+    const { postid } = e.detail;
+    wx.navigateTo({
+      url: `/pages/post-detail/index?id=${postid}`
+    });
+  },
+
+  // 分享帖子
+  onSharePost(e) {
+    const { postid } = e.detail;
+    app.showSuccess('已生成分享卡片');
+  },
+
+  // 点击用户头像
+  onAvatarTap(e) {
+    const { userid } = e.detail;
+    wx.navigateTo({
+      url: `/pages/profile/other?id=${userid}`
+    });
   }
 });

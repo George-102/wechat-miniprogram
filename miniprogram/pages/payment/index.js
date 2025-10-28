@@ -2,7 +2,6 @@ const app = getApp();
 
 Page({
   data: {
-    navBarHeight: 88,
     customNavHeight: 0,
     orderInfo: null,
     paymentMethods: [
@@ -15,7 +14,7 @@ Page({
 
   onLoad(options) {
     this.setData({
-      navBarHeight: app.globalData.navBarHeight || 88
+      customNavHeight: app.globalData.customNavHeight
     });
 
     // 获取订单信息，这里假设从options中获取订单id，然后从云函数获取订单详情

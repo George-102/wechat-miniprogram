@@ -122,34 +122,33 @@ App({
     }
   },
 
-  // 获取系统信息
-  getSystemInfo() {
-    try {
-      const systemInfo = wx.getSystemInfoSync();
-      console.log('系统信息:', systemInfo);
-      
-      // 获取状态栏高度
-      const statusBarHeight = systemInfo.statusBarHeight;
-      
-      // 计算导航栏高度（状态栏高度 + 44px）
-      const navBarHeight = statusBarHeight + 44;
-      
-      this.globalData.systemInfo = systemInfo;
-      this.globalData.statusBarHeight = statusBarHeight;
-      this.globalData.navBarHeight = navBarHeight;
-      this.globalData.customNavHeight = navBarHeight;
-      
-      console.log('状态栏高度:', statusBarHeight);
-      console.log('导航栏总高度:', navBarHeight);
-      
-    } catch (error) {
-      console.error('获取系统信息失败:', error);
-      // 设置默认值
-      this.globalData.statusBarHeight = 44;
-      this.globalData.navBarHeight = 88;
-      this.globalData.customNavHeight = 88;
-    }
-  },
+// 获取系统信息
+getSystemInfo() {
+  try {
+    wx.getSystemInfo({
+      success: (res) => {
+        this.globalData.systemInfo = res;
+        this.globalData.statusBarHeight = res.statusBarHeight;
+        
+        // 设置自定义状态栏高度
+        this.globalData.customNavHeight = res.statusBarHeight + 44;
+        
+        console.log('系统信息获取成功:', res);
+        console.log('状态栏高度:', res.statusBarHeight);
+        console.log('自定义导航栏高度:', this.globalData.customNavHeight);
+      },
+      fail: (error) => {
+        console.error('获取系统信息失败:', error);
+        // 设置默认值
+        this.globalData.systemInfo = {};
+        this.globalData.statusBarHeight = 20;
+        this.globalData.customNavHeight = 64;
+      }
+    });
+  } catch (error) {
+    console.error('获取系统信息异常:', error);
+  }
+},
 
   // 检查登录状态
   checkLoginStatus() {

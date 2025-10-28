@@ -1,8 +1,14 @@
 <view class="payment-page">
   <!-- 自定义导航栏 -->
-  <custom-nav title="确认支付" show-back="{{true}}" show-back-text="{{true}}">
-    <view slot="right" class="nav-actions"></view>
-  </custom-nav>
+  <view class="custom-nav" style="height: {{customNavHeight}}px">
+    <view class="nav-content" style="height: 44px; padding-top: {{statusBarHeight}}px">
+      <view class="nav-back" bind:tap="onCancelPayment">
+        <text class="back-icon">‹</text>
+      </view>
+      <text class="nav-title">确认支付</text>
+      <view class="nav-actions"></view>
+    </view>
+  </view>
 
   <view class="payment-container" style="padding-top: {{customNavHeight}}px">
     <!-- 订单信息 -->
